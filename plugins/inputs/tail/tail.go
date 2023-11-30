@@ -9,6 +9,7 @@ import (
 	_ "embed"
 	"errors"
 	"io"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -236,6 +237,11 @@ func (t *Tail) tailNewFiles(fromBeginning bool) error {
 
 				if err := tailer.Err(); err != nil {
 					t.Log.Errorf("Tailing %q: %s", tailer.Filename, err.Error())
+					if errors.Is(err, os.ErrPermission) {
+						t.Log.Errorf("os.ErrPermission was wrapped")
+					} else {
+						t.Log.Errorf("os.ErrPermission was NOT wrapped")
+					}
 					if strings.HasSuffix(err.Error(), "permission denied") {
 						t.Log.Errorf("Deleting tailer for %q", tailer.Filename)
 						delete(t.tailers, tailer.Filename)
