@@ -111,6 +111,12 @@ func (t *Tail) Init() error {
 }
 
 func (t *Tail) GetState() interface{} {
+	for _, tailer := range t.tailers {
+		if !t.Pipe && !t.FromBeginning {
+			t.storeOffsets(tailer)
+		}
+	}
+
 	return t.offsets
 }
 
@@ -126,11 +132,6 @@ func (t *Tail) SetState(state interface{}) error {
 }
 
 func (t *Tail) Gather(_ telegraf.Accumulator) error {
-	for _, tailer := range t.tailers {
-		if !t.Pipe && !t.FromBeginning {
-			t.storeOffsets(tailer)
-		}
-	}
 	return t.tailNewFiles(true)
 }
 
