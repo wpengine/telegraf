@@ -111,8 +111,8 @@ func (t *Tail) Init() error {
 }
 
 func (t *Tail) GetState() interface{} {
-	for _, tailer := range t.tailers {
-		if !t.Pipe && !t.FromBeginning {
+	if !t.Pipe && !t.FromBeginning {
+		for _, tailer := range t.tailers {
 			t.storeOffsets(tailer)
 		}
 	}
