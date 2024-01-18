@@ -340,6 +340,10 @@ func (t *Telegraf) runAgent(ctx context.Context, reloadConfig bool) error {
 		return fmt.Errorf("agent flush_interval must be positive; found %v", c.Agent.Interval)
 	}
 
+	if int64(c.Agent.PersistInterval) <= 0 {
+		return fmt.Errorf("agent statefile_persist_interval must be positive; found %v", c.Agent.Interval)
+	}
+
 	// Setup logging as configured.
 	logConfig := logger.Config{
 		Debug:               c.Agent.Debug || t.debug,
